@@ -8,23 +8,28 @@ import android.view.ViewGroup
 import com.example.aviatickets.R
 import com.example.aviatickets.adapter.OfferListAdapter
 import com.example.aviatickets.databinding.FragmentOfferListBinding
-import com.example.aviatickets.model.service.FakeService
+import com.example.aviatickets.model.entity.Offer
+import com.example.aviatickets.model.network.ApiClient
+import com.example.aviatickets.model.service.ApiService
+import retrofit2.Call
+import retrofit2.Response
 
 
 class OfferListFragment : Fragment() {
-
     companion object {
         fun newInstance() = OfferListFragment()
     }
 
     private var _binding: FragmentOfferListBinding? = null
+    private val sortedMapByPrice: Boolean = false
+    private val sortedMapByDuration: Boolean = false
+
     private val binding
         get() = _binding!!
 
     private val adapter: OfferListAdapter by lazy {
         OfferListAdapter()
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,7 +42,18 @@ class OfferListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
-        adapter.setItems(FakeService.offerList)
+        val apiService = ApiClient.instance
+        val call = apiService.getOffers()
+        call.enqueue(object : retrofit2.Callback<List<Offer>> {
+            override fun onResponse(call: Call<List<Offer>>, response: Response<List<Offer>>) {
+                println("${response.body()}")
+            }
+
+            override fun onFailure(call: Call<List<Offer>>, t: Throwable) {
+                println("${t.message}")
+            }
+
+        })
     }
 
     private fun setupUI() {
@@ -50,15 +66,21 @@ class OfferListFragment : Fragment() {
                         /**
                          * implement sorting by price
                          */
+                        adapter.sortedByPrice();
                     }
 
                     R.id.sort_by_duration -> {
                         /**
                          * implement sorting by duration
                          */
+                        adapter.sortedByDuration()
                     }
                 }
             }
         }
     }
 }
+
+
+
+

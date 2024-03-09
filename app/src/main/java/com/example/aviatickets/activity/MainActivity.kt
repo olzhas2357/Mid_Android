@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.example.aviatickets.R
 import com.example.aviatickets.databinding.ActivityMainBinding
 import com.example.aviatickets.fragment.OfferListFragment
+import com.example.aviatickets.model.network.ApiClient
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -20,4 +21,5 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
     }
+
 }
